@@ -67,7 +67,7 @@ Accurate prediction of house prices is crucial in real estate decision-making. T
 
 ## Google Colab Link
 
-[Click to View Implementation](#)
+[https://colab.research.google.com/drive/1yq8MBk594jZQTcwr44GirVPAi4fIZa1c?usp=drive_link](#)
 
 ## Team Credits
 
@@ -78,6 +78,3 @@ This project was developed as part of the **Naan Mudhalvan** initiative by:
 - **Lenin M.**
 - **Kannan S.**
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
