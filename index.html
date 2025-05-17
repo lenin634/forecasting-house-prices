@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeValue Forecast</title>
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .forecast-section {
+            padding: 4rem 0;
+        }
+        
+        .forecast-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .forecast-form {
+            background: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 400px;
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+        }
+        
+        button {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        button:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 400px;
+            max-width: 600px;
+            display: none;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin: 1rem 0;
+        }
+        
+        .price::before {
+            content: "₹";
+        }
+        
+        .price-change {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        
+        .positive {
+            background-color: #e6f7ee;
+            color: #00a854;
+        }
+        
+        .negative {
+            background-color: #fde8e8;
+            color: #f04134;
+        }
+        
+        .features {
+            margin-top: 2rem;
+        }
+        
+        .feature {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .feature:last-child {
+            border-bottom: none;
+        }
+        
+        .market-trends {
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        .trend-cards {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .trend-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            transition: transform 0.3s;
+        }
+        
+        .trend-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .trend-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .trend-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .trend-value::before {
+            content: "₹";
+        }
+        
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .forecast-form, .result-card {
+                min-width: 100%;
+                padding: 1.8rem;
+            }
+            
+            .forecast-container {
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>HomeValue Forecast</h1>
+            <p class="subtitle">Get accurate house price predictions and market trends to make informed real estate decisions</p>
+        </div>
+    </header>
+    
+    <section class="forecast-section">
+        <div class="container">
+            <div class="forecast-container">
+                <div class="forecast-form">
+                    <h2>Price Prediction Tool</h2>
+                    <p>Enter property details to get a price forecast</p>
+                    
+                    <form id="priceForm">
+                        <div class="form-group">
+                            <label for="address">Property Address</label>
+                            <input type="text" id="address" placeholder="Enter street address" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" placeholder="Enter city" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bedrooms">Number of Bedrooms</label>
+                            <select id="bedrooms" required>
+                                <option value="">Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="5+">5+</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bathrooms">Number of Bathrooms</label>
+                            <select id="bathrooms" required>
+                                <option value="">Select</option>
+                                <option value="1">1</option>
+                                <option value="1.5">1.5</option>
+                                <option value="2">2</option>
+                                <option value="2.5">2.5</option>
+                                <option value="3">3</option>
+                                <option value="3+">3+</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sqft">Square Footage</label>
+                            <input type="number" id="sqft" placeholder="Enter square footage" required min="300" max="10000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="year">Year Built</label>
+                            <input type="number" id="year" placeholder="Enter year built" min="1800" max="2023" required>
+                        </div>
+                        
+                        <button type="submit">Estimate Price</button>
+                    </form>
+                </div>
+                
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <h2>Price Forecast</h2>
+                        <div class="price-change positive" id="priceChange">+5.2%</div>
+                    </div>
+                    
+                    <p>Estimated value for:</p>
+                    <h3 id="resultAddress">123 Main St, Anytown</h3>
+                    
+                    <div class="price" id="resultPrice">42,50,000</div>
+                    <p id="resultDescription">Based on current market trends and comparable properties in your area.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <span>Bedrooms</span>
+                            <strong id="resultBedrooms">3</strong>
+                        </div>
+                        <div class="feature">
+                            <span>Bathrooms</span>
+                            <strong id="resultBathrooms">2</strong>
+                        </div>
+                        <div class="feature">
+                            <span>Square Footage</span>
+                            <strong id="resultSqft">1,850</strong>
+                        </div>
+                        <div class="feature">
+                            <span>Year Built</span>
+                            <strong id="resultYear">1995</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="market-trends">
+                <h2>Current Market Trends</h2>
+                <p>Understand the broader real estate market conditions</p>
+                
+                <div class="trend-cards">
+                    <div class="trend-card">
+                        <h3>Median Home Price</h3>
+                        <div class="trend-value">38,50,000</div>
+                        <p>+4.3% from last year</p>
+                    </div>
+                    
+                    <div class="trend-card">
+                        <h3>Average Price per SqFt</h3>
+                        <div class="trend-value">5,200</div>
+                        <p>+2.1% from last year</p>
+                    </div>
+                    
+                    <div class="trend-card">
+                        <h3>Luxury Home Price</h3>
+                        <div class="trend-value">1.2 Cr</div>
+                        <p>+6.7% from last year</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="currentYear"></span> HomeValue Forecast. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Form submission handler
+        document.getElementById('priceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate all required fields
+            const requiredFields = ['address', 'city', 'bedrooms', 'bathrooms', 'sqft', 'year'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value) {
+                    field.style.borderColor = 'red';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Get form values
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const bedrooms = parseInt(document.getElementById('bedrooms').value) || 0;
+            const bathrooms = parseFloat(document.getElementById('bathrooms').value) || 0;
+            const sqft = parseInt(document.getElementById('sqft').value) || 0;
+            const year = parseInt(document.getElementById('year').value) || 2000;
+            
+            // Calculate base price (in rupees)
+            let basePrice = 2500000; // Base price for 1BHK
+            basePrice += bedrooms * 1000000; // Each bedroom adds value
+            basePrice += bathrooms * 500000; // Each bathroom adds value
+            basePrice += sqft * 3000; // Price per sqft
+            
+            // Adjust for property age (newer = more value)
+            const age = new Date().getFullYear() - year;
+            basePrice *= Math.max(0.7, 1 - (age * 0.01)); // 1% depreciation per year
+            
+            // Add some randomness (10% variation)
+            const randomFactor = 0.9 + Math.random() * 0.2;
+            let estimatedPrice = Math.round(basePrice * randomFactor);
+            
+            // Format price for display
+            let formattedPrice;
+            if (estimatedPrice >= 10000000) {
+                // Display in crores
+                formattedPrice = (estimatedPrice / 10000000).toLocaleString('en-IN', {
+                    maximumFractionDigits: 2
+                }) + " Cr";
+            } else {
+                // Display in lakhs
+                formattedPrice = (estimatedPrice / 100000).toLocaleString('en-IN', {
+                    maximumFractionDigits: 2
+                }) + " L";
+            }
+            
+            // Display results
+            document.getElementById('resultAddress').textContent = `${address}, ${city}`;
+            document.getElementById('resultPrice').textContent = estimatedPrice.toLocaleString('en-IN');
+            document.getElementById('resultBedrooms').textContent = bedrooms;
+            document.getElementById('resultBathrooms').textContent = bathrooms;
+            document.getElementById('resultSqft').textContent = sqft.toLocaleString('en-IN');
+            document.getElementById('resultYear').textContent = year;
+            
+            // Calculate and show price change
+            const changePercent = (Math.random() * 10 - 3).toFixed(1);
+            const changeElement = document.getElementById('priceChange');
+            
+            if (changePercent >= 0) {
+                changeElement.textContent = `+${changePercent}%`;
+                changeElement.className = 'price-change positive';
+            } else {
+                changeElement.textContent = `${changePercent}%`;
+                changeElement.className = 'price-change negative';
+            }
+            
+            // Show result card
+            document.getElementById('resultCard').style.display = 'block';
+            
+            // Scroll to results smoothly
+            document.getElementById('resultCard').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+        
+        // Input validation for number fields
+        document.getElementById('sqft').addEventListener('input', function() {
+            if (this.value < 300) this.value = 300;
+            if (this.value > 10000) this.value = 10000;
+        });
+        
+        document.getElementById('year').addEventListener('input', function() {
+            if (this.value < 1800) this.value = 1800;
+            if (this.value > new Date().getFullYear()) this.value = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
